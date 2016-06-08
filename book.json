@@ -5,5 +5,5 @@
     },
   },
   "language": "cn",
-  "plugins":["-sharing","-livereload","-search","-fontsettings"]
+  "plugins":["-sharing","-livereload","-search","-fontsettings"],
 }
