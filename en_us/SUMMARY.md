@@ -18,3 +18,4 @@
   14. [New Modules](whatnews/NewModules.md)
   15. [Improved Modules](whatnews/ImprovedModules.md)
   16. [Other Module-level Changes](whatnews/OtherModuleLevelChanges.md)
+  17. [Optimizations](whatnews/Optimizations.md)
