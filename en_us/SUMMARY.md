@@ -16,3 +16,4 @@
     1212. [PEP 489: Multi-phase extension module initialization](whatnews/NewFeatures/#pep-489-multi-phase-extension-module-initialization)
   13. [Other Language Changes](whatnews/OtherLanguageChanges.md)
   14. [New Modules](whatnews/NewModules.md)
+  15. [Improved Modules](whatnews/ImprovedModules.md)
