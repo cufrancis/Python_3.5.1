@@ -15,3 +15,4 @@
     1211. [PEP 488: Elimination of PYO files](whatnews/NewFeatures.md/#pep-488-elimination-of-pyo-files)
     1212. [PEP 489: Multi-phase extension module initialization](whatnews/NewFeatures/#pep-489-multi-phase-extension-module-initialization)
   13. [Other Language Changes](whatnews/OtherLanguageChanges.md)
+  14. [New Modules](whatnews/NewModules.md)
