@@ -19,3 +19,7 @@
   15. [Improved Modules](whatnews/ImprovedModules.md)
   16. [Other Module-level Changes](whatnews/OtherModuleLevelChanges.md)
   17. [Optimizations](whatnews/Optimizations.md)
+  18. [Build and C API Changes](whatnews/BuildAndCAPIChanges.md)
+  19. [Deprecated](whatnews/Deprecated.md)
+  20. [Removed](whatnews/Removed.md)
+  21. [Porting to Python 3.5](whatnews/PortingToPython3_5.md)

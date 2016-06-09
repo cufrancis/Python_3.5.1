@@ -1,4 +1,4 @@
-### Optimizations
+## Optimizations
 
 The os.walk() function has been sped up by 3 to 5 times on POSIX systems, and by 7 to 20 times on Windows. This was done using the new os.scandir() function, which exposes file information from the underlying readdir or FindFirstFile/FindNextFile system calls. (Contributed by Ben Hoyt with help from Victor Stinner in [issue 23605](https://bugs.python.org/issue23605).)
 

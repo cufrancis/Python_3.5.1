@@ -1,0 +1,39 @@
+## Porting to Python 3.5
+This section lists previously described changes and other bugfixes that may require changes to your code.
+
+### Changes in Python behavior
+* Due to an oversight, earlier Python versions erroneously accepted the following syntax:
+
+```python
+f(1 for x in [1], *args)
+f(1 for x in [1], **kwargs)
+```
+Python 3.5 now correctly raises a SyntaxError, as generator expressions must be put in parentheses if not a sole argument to a function.
+
+### Changes in the Python API 
+* [PEP 475](https://www.python.org/dev/peps/pep-0475): System calls are now retried when interrupted by a signal instead of raising InterruptedError if the Python signal handler does not raise an exception.
+* Before Python 3.5, a datetime.time object was considered to be false if it represented midnight in UTC. This behavior was considered obscure and error-prone and has been removed in Python 3.5. See [issue 13936](https://bugs.python.org/issue13936) for full details.
+* The ssl.SSLSocket.send() method now raises either ssl.SSLWantReadError or ssl.SSLWantWriteError on a non-blocking socket if the operation would block. Previously, it would return 0. (Contributed by Nikolaus Rath in [issue 20951](https://bugs.python.org/issue20951).)
+* The `__name__` attribute of generators is now set from the function name, instead of being set from the code name. Use `gen.gi_code.co_name` to retrieve the code name. Generators also have a new `__qualname__` attribute, the qualified name, which is now used for the representation of a generator (`repr(gen)`). (Contributed by Victor Stinner in [issue 21205](https://bugs.python.org/issue21205).)
+* The deprecated “strict” mode and argument of HTMLParser, HTMLParser.error(), and the HTMLParserError exception have been removed. (Contributed by Ezio Melotti in [issue 15114](https://bugs.python.org/issue15114).) The convert_charrefs argument of HTMLParser is now True by default. (Contributed by Berker Peksag in [issue 21047](https://bugs.python.org/issue21047).)
+* Although it is not formally part of the API, it is worth noting for porting purposes (ie: fixing tests) that error messages that were previously of the form “‘sometype’ does not support the buffer protocol” are now of the form “a bytes-like object is required, not ‘sometype’”. (Contributed by Ezio Melotti in [issue 16518](https://bugs.python.org/issue16518).)
+* If the current directory is set to a directory that no longer exists then FileNotFoundError will no longer be raised and instead find_spec() will return None without caching None in sys.path_importer_cache, which is different than the typical case  [issue 22834](https://bugs.python.org/issue22834)).
+* HTTP status code and messages from http.client and http.server were refactored into a common HTTPStatus enum. The values in http.client and http.server remain available for backwards compatibility. (Contributed by Demian Brecht in [issue 21793](https://bugs.python.org/issue21793).)
+* When an import loader defines importlib.machinery.Loader.exec_module() it is now expected to also define create_module() (raises a DeprecationWarning now, will be an error in Python 3.6). If the loader inherits from importlib.abc.Loader then there is nothing to do, else simply define create_module() to return None. (Contributed by Brett Cannon in [issue 23014](https://bugs.python.org/issue23014).)
+* The re.split() function always ignored empty pattern matches, so the `"x*"` pattern worked the same as `"x+"`, and the `"\b"` pattern never worked. Now re.split() raises a warning if the pattern could match an empty string. For compatibility, use patterns that never match an empty string (e.g. `"x+"` instead of `"x*"`). Patterns that could only match an empty string (such as `"\b"`) now raise an error. (Contributed by Serhiy Storchaka in [issue 22818](https://bugs.python.org/issue22818).)
+* The http.cookies.Morsel dict-like interface has been made self consistent: morsel comparison now takes the key and value into account, copy() now results in a Morsel instance rather than a dict, and update() will now raise an exception if any of the keys in the update dictionary are invalid. In addition, the undocumented LegalChars parameter of set() is deprecated and is now ignored. (Contributed by Demian Brecht in [issue 2211](https://bugs.python.org/issue2211).) 
+* [PEP 488](https://www.python.org/dev/peps/pep-0488) has removed .pyo files from Python and introduced the optional `opt- `tag in `.pyc `file names. The importlib.util.cache_from_source() has gained an optimization parameter to help control the `opt-` tag. Because of this, the debug_override parameter of the function is now deprecated. `.pyo` files are also no longer supported as a file argument to the Python interpreter and thus serve no purpose when distributed on their own (i.e. sourcless code distribution). Due to the fact that the magic number for bytecode has changed in Python 3.5, all old .pyo files from previous versions of Python are invalid regardless of this PEP.
+* The socket module now exports the CAN_RAW_FD_FRAMES constant on linux 3.6 and greater.
+* The ssl.cert_time_to_seconds() function now interprets the input time as UTC and not as local time, per RFC 5280. Additionally, the return value is always an int. (Contributed by Akira Li in [issue 19940](https://bugs.python.org/issue19940).)
+* The pygettext.py Tool now uses the standard +NNNN format for timezones in the POT-Creation-Date header.
+* The smtplib module now uses sys.stderr instead of the previous module-level stderr variable for debug output. If your (test) program depends on patching the module-level variable to capture the debug output, you will need to update it to capture sys.stderr instead.
+* The str.startswith() and str.endswith() methods no longer return True when finding the empty string and the indexes are completely out of range. (Contributed by Serhiy Storchaka in [issue 24284](https://bugs.python.org/issue24284).)
+* The inspect.getdoc() function now returns documentation strings inherited from base classes. Documentation strings no longer need to be duplicated if the inherited documentation is appropriate. To suppress an inherited string, an empty string must be specified (or the documentation may be filled in). This change affects the output of the pydoc module and the help() function. (Contributed by Serhiy Storchaka in [issue 15582](https://bugs.python.org/issue15582).)
+* Nested functools.partial() calls are now flattened. If you were relying on the previous behavior, you can now either add an attribute to a functools.partial() object or you can create a subclass of functools.partial(). (Contributed by Alexander Belopolsky in [issue 7830](https://bugs.python.org/issue7830).)
+
+### Changes in the C API
+* The undocumented format member of the (non-public) PyMemoryViewObject structure has been removed. All extensions relying on the relevant parts in `memoryobject.h` must be rebuilt.
+* The PyMemAllocator structure was renamed to PyMemAllocatorEx and a new `calloc` field was added.
+* Removed non-documented macro PyObject_REPR which leaked references. Use format character %R in PyUnicode_FromFormat()-like functions to format the repr() of the object. (Contributed by Serhiy Storchaka in [issue 22453](https://bugs.python.org/issue22453).)
+* Because the lack of the `__module__` attribute breaks pickling and introspection, a deprecation warning is now raised for builtin types without the `__module__` attribute. This would be an AttributeError in the future. (Contributed by Serhiy Storchaka in [issue 20204](https://bugs.python.org/issue20204).)
+* As part of the [PEP 492](https://www.python.org/dev/peps/pep-0492) implementation, the `tp_reserved` slot of PyTypeObject was replaced with a tp_as_async slot. Refer to Coroutine Objects for new types, structures and functions.
