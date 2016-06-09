@@ -17,3 +17,4 @@
   13. [Other Language Changes](whatnews/OtherLanguageChanges.md)
   14. [New Modules](whatnews/NewModules.md)
   15. [Improved Modules](whatnews/ImprovedModules.md)
+  16. [Other Module-level Changes](whatnews/OtherModuleLevelChanges.md)
